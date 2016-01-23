@@ -33,10 +33,56 @@
 
 #include <stdarg.h>
 
-int mini_vsnprintf(char* buffer, unsigned int buffer_len, char *fmt, va_list va);
-int mini_snprintf(char* buffer, unsigned int buffer_len, char *fmt, ...);
+#ifdef _WIN32
+    #include <stdio.h>
 
-//#define vsnprintf mini_vsnprintf
-//#define snprintf mini_snprintf
+    //define something for Windows (32-bit and 64-bit, this part is common)
+    #ifdef _WIN64
+    //define something for Windows (64-bit only)
+    #endif
+
+#elif __APPLE__
+
+    #include "TargetConditionals.h"
+
+    #if TARGET_IPHONE_SIMULATOR
+    // iOS Simulator
+    int mini_vsnprintf(char* buffer, unsigned int buffer_len, char *fmt, va_list va);
+    int mini_snprintf(char* buffer, unsigned int buffer_len, char *fmt, ...);
+
+    #define vsnprintf mini_vsnprintf
+    #define snprintf mini_snprintf
+
+
+    #elif TARGET_OS_IPHONE
+    // iOS device
+    // iOS Simulator
+    int mini_vsnprintf(char* buffer, unsigned int buffer_len, char *fmt, va_list va);
+    int mini_snprintf(char* buffer, unsigned int buffer_len, char *fmt, ...);
+
+    #define vsnprintf mini_vsnprintf
+    #define snprintf mini_snprintf
+
+    #elif TARGET_OS_MAC
+    // Other kinds of Mac OS
+    #include <stdio.h>
+
+    #else
+    #   error "Unknown Apple platform"
+    #endif
+#elif __linux__
+// linux
+    #include <stdio.h>
+
+#elif __unix__ // all unices not caught above
+// Unix
+    #include <stdio.h>
+
+#elif defined(_POSIX_VERSION)
+// POSIX
+#else
+#   error "Unknown compiler"
+#endif
+
 
 #endif

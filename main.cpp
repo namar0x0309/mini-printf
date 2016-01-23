@@ -1,7 +1,6 @@
 #include <string.h>
 #include <stdarg.h>
 #include "mini-printf.h"
-#include <stdio.h>
 
 int main( int argc, char ** argv )
 {
